@@ -1,0 +1,37 @@
+<admintpl file="header" />
+<style>
+	nav li{cursor: pointer;}
+	textarea{width: 96%;}
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:U('article/index')}">模块管理</a></li>
+		</ul>
+		<form action="">
+			<table class="table table-hover table-bordered">
+				<tr>
+					<th>
+						模块名称
+					</th>
+					<th>
+						功能
+					</th>
+				</tr>
+				<foreach name="list" item="v">
+					<tr>
+						<td>{$v.name}</td>
+						<th>
+							<a href="{:U('article/edit')}&type={$v.type}&name={$v.name}">编辑</a>
+							<a href="{:U('article/add')}&type={$v.type}&name={$v.name}">添加</a>
+						</th>
+					</tr>
+				</foreach>
+			</table>
+			<input type="submit" class="btn btn-primary" value="保存" />
+		</form>
+	</div>
+	<script src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

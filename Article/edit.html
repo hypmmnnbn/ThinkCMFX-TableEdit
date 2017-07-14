@@ -1,0 +1,96 @@
+<admintpl file="header" />
+<style>
+	nav li{cursor: pointer;}
+	textarea{width: 96%;}
+	.text-edit{width: 96%;}
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('article/index')}">模块管理</a></li>
+			<li class="active"><a href="{:U('article/edit')}">{$name}编辑</a></li>
+		</ul>
+		<form action="{:U('article/edit')}&type={$type}&name={$name}" method="post">
+			<table class="table table-hover table-bordered">
+				<tr>
+					<foreach name="tis" item="v">
+						<th>{$v.comment}</th>
+					</foreach>
+					<th>功能</th>
+				</tr>
+				<php>$i=0;</php>
+				<foreach name="list" item="v">
+					<tr>
+						<php>$i++;</php>
+						<php>$nid=$key;</php>
+						<foreach name="v" item="val">
+							<if condition="($key eq 'icon') OR ($key eq 'img') OR ($key eq 'images')">
+								<th>
+									<div style="text-align: center;background: #666;width:60px;height: 60px;overflow: hidden;margin: auto;">
+										<input type="hidden" name="{$key}[]" id="thumb{$i}" value="{$val}">
+										<a href="javascript:upload_one_image('图片上传','#thumb{$i}');">
+											<if condition='$val'><img src="__UPLOAD__/{$val}" id="thumb{$i}-preview" width="60" style="cursor: hand"></if>
+										</a>
+									</div>
+								</th>
+							<elseif condition="$key eq 'id'" />
+								<th>{$val}</th>
+							<elseif condition="($key eq 'name') OR ($key eq 'title')" /> 
+								<th><input class="text-edit" type="text" name="{$key}[]" value="{$val}"></th>
+							<elseif condition="$key eq 'number'" />
+								<th><input type="number" name="{$key}[]" value="{$val}"></th>
+							<elseif condition="$key eq 'ueditor'" />
+								<th><script type="text/plain" id="editor{$nid}" name="{$key}[]">{$val}</script></th>
+							<else/>
+								<th><textarea name="{$key}[]" rows="4" >{$val}</textarea></th>
+							</if>
+						</foreach>
+						<th><input type="button" class="btn btn-danger" onclick="del('{$v.id}','{$type}')" value="删除"></th>
+					</tr>
+				</foreach>
+			</table>
+			<input type="submit" class="btn btn-primary" value="保存" />
+		</form>
+	</div>
+	<script src="__PUBLIC__/js/common.js"></script>
+	<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ueditor/ueditor.all.min.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<script>
+		function del(id,table){
+			if(confirm("确认删除？")){
+				$.ajax({
+					   type: "POST",
+					   url: "{:U('admin/article/del')}",
+					   data:{id:id,table:table},
+					   success: function(msg){
+					   var ob =msg.mes;
+					   if(ob='success'){
+						  alert('删除成功');
+						  window.location.reload();
+					   }else{
+						  alert('删除失败');
+						  window.location.reload();
+					   }
+					}
+				});
+			}
+		}
+		<foreach name="list" item="v">
+			<php>$nid=$key;</php>
+			<foreach name="v" item="val">
+				<if condition="$key eq 'ueditor'" >
+				ue = UE.getEditor('editor{$nid}', {
+					toolbars: [
+						['bold','italic','justifyleft','justifycenter','justifyright','justifyjustify','forecolor','insertunorderedlist','insertimage']
+					],
+					autoHeightEnabled: true,
+					autoFloatEnabled: true
+				});
+			</if>
+			</foreach>
+		</foreach>
+	</script>
+</body>
+</html>
